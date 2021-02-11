@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ProductService } from './Product.service';
-
+import { ValidateId } from '../utils/pipes/idValidation.pipe';
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -22,6 +22,14 @@ export class ProductController {
     return { titles };
   }
 
+  @Get('categories/:categoryName/count')
+  async countOfTotalProducts(@Param('categoryName') category: string) {
+    const count = await this.productService.getCountOfTheGivenCategory(
+      category,
+    );
+    return { count };
+  }
+
   @Get('categories/:categoryName')
   async getProductsInGivenCategory(
     @Param('categoryName') categoryName: string,
@@ -35,5 +43,11 @@ export class ProductController {
       numberStartIndex,
     );
     return { products };
+  }
+
+  @Get(':productId')
+  async getProduct(@Param('productId', ValidateId) pId: string) {
+    const product = await this.productService.getProductFromId(pId);
+    return { product };
   }
 }

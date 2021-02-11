@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { timeoutMongooseQuery } from 'src/utils/helperFunction/timeout';
@@ -50,6 +54,34 @@ export class ProductService {
           .limit(numberOfProducts),
       );
       return products;
+    } catch (e) {
+      throw new InternalServerErrorException(
+        'taking longer than expected please try later',
+      );
+    }
+  }
+
+  async getProductFromId(id: string) {
+    try {
+      const product = await timeoutMongooseQuery<Product, Product>(
+        this.productModel.findById(id),
+      );
+      if (product) {
+        return product;
+      } else {
+        throw new NotFoundException('product not found');
+      }
+    } catch (e) {
+      throw new NotFoundException('product not found');
+    }
+  }
+
+  async getCountOfTheGivenCategory(category: string) {
+    try {
+      const count = await this.productModel
+        .find({ product_category: category })
+        .countDocuments();
+      return count;
     } catch (e) {
       throw new InternalServerErrorException(
         'taking longer than expected please try later',
