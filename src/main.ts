@@ -4,9 +4,11 @@ import * as passport from 'passport';
 import * as session from 'express-session';
 
 import { cookieKey } from './config/keys';
+import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe());
   app.use(
     session({
       secret: cookieKey,

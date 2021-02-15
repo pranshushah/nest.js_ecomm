@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 import { isValidObjectId } from 'mongoose';
 @Injectable()
-export class ValidateId implements PipeTransform {
+export class ValidateIdInObject implements PipeTransform {
   transform(value: any) {
-    if (isValidObjectId(value)) {
+    if (isValidObjectId(value.id)) {
       return value;
     } else {
-      throw new NotAcceptableException('invalid id');
+      throw new NotAcceptableException('invalid id in object');
     }
   }
 }

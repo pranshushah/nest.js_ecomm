@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { AuthenticatedGuard } from 'src/utils/Guards/Authenticated.guard';
-import { LoginGuard } from 'src/utils/Guards/Login.guard';
+import { AuthenticatedGuard } from '../utils/Guards/Authenticated.guard';
+import { LoginGuard } from '../utils/Guards/Login.guard';
 
 @Controller('auth')
 export class AuthController {

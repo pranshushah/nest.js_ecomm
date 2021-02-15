@@ -1,12 +1,13 @@
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { timeoutMongooseQuery } from 'src/utils/helperFunction/timeout';
-import { Product } from './Product.model';
+import { timeoutMongooseQuery } from '../utils/helperFunction/timeout';
+import { Product, ProductAttr } from './Product.model';
 
 @Injectable()
 export class ProductService {
@@ -89,9 +90,18 @@ export class ProductService {
     }
   }
 
-  // private createProduct(productObj: ProductAttr) {
-  //   return new this.productModel(productObj);
-  // }
+  async addProductsToTest(productObjs: ProductAttr[]) {
+    const docs: Product[] = [];
+    if (process.env.NODE_ENV === 'test') {
+      for (const productObj of productObjs) {
+        const doc = await new this.productModel(productObj).save();
+        docs.push(doc);
+      }
+    } else {
+      throw new ForbiddenException('you are not allowed');
+    }
+    return docs;
+  }
   // async SeedProduct() {
   //   const rawData = readFileSync('/home/pranshu/projects/csv/converted.json');
   //   //@ts-ignore

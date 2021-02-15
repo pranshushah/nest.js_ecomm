@@ -1,7 +1,7 @@
 import { PassportSerializer } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { UserService } from 'src/User/User.Service';
-import { User } from 'src/User/User.model';
+import { UserService } from '../User/User.Service';
+import { User } from '../User/User.model';
 
 @Injectable()
 export class CookieSerializer extends PassportSerializer {

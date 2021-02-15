@@ -28,10 +28,6 @@ export const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    // phone: {
-    //   type: Number,
-    //   required: [true, 'phone Number is required'],
-    // },
   },
   {
     // to convert returning object as we want
@@ -50,7 +46,9 @@ export interface userAttr {
   email: string;
   name: string;
   imageURL: string;
-  // phone: number;
+}
+export interface userInfo extends userAttr {
+  id: string;
 }
 // this will be type of document when create with new User();
 export interface User extends Document, userAttr {}

@@ -2,7 +2,7 @@ import { Schema, Document, Types } from 'mongoose';
 
 export const AddressSchema = new Schema(
   {
-    pinCode: {
+    pincode: {
       type: Number,
       required: [true, 'pincode is required'],
       validate: {
@@ -16,7 +16,6 @@ export const AddressSchema = new Schema(
     },
     landMarks: {
       type: [String],
-      required: [true, 'landmark is required'],
       validate: {
         validator(landMarks: string[]) {
           if (
@@ -25,7 +24,7 @@ export const AddressSchema = new Schema(
             landMarks.length <= 2
           ) {
             for (let i = 0; i < landMarks.length; i++) {
-              if (landMarks[i].length > 1) {
+              if (landMarks[i].length > 1 && landMarks[i].length < 45) {
                 continue;
               } else {
                 return false;
@@ -46,7 +45,7 @@ export const AddressSchema = new Schema(
       required: [true, 'address is required '],
       validate: {
         validator(address: string) {
-          return address.length > 2;
+          return address.length > 2 && address.length < 120;
         },
         message() {
           return `address should have atleast 2 char`;
@@ -56,27 +55,55 @@ export const AddressSchema = new Schema(
     state: {
       type: String,
       required: [true, 'state is required '],
+      validate: {
+        validator(state: string) {
+          return state.length > 1 && state.length < 75;
+        },
+        message() {
+          return `state should be between 2 and 74`;
+        },
+      },
+    },
+    city: {
+      type: String,
+      required: [true, 'city is required '],
+      validate: {
+        validator(city: string) {
+          return city.length > 1 && city.length < 75;
+        },
+        message() {
+          return `city should be between 2 and 74`;
+        },
+      },
     },
     country: {
       type: String,
       required: [true, 'country is required '],
+      validate: {
+        validator(country: string) {
+          return country.length > 1 && country.length < 75;
+        },
+        message() {
+          return `state should be between 2 and 74`;
+        },
+      },
     },
     deliveredTo: {
       type: String,
       required: [true, 'name is required '],
       validate: {
         validator(name: string) {
-          return name.length > 2;
+          return name.length > 1 && name.length < 45;
         },
         message() {
-          return `name should have atleast 2 char`;
+          return `name should be between 2 and 44 char`;
         },
       },
     },
-    userId: {
-      type: Types.ObjectId,
-      required: [true, 'userid is required'],
-    },
+    // userId: {
+    //   type: Types.ObjectId,
+    //   required: [true, 'userid is required'],
+    // },
   },
   {
     // to convert returning object as we want
@@ -90,14 +117,18 @@ export const AddressSchema = new Schema(
   },
 );
 
-export interface AddressAttr {
-  pinCode: number;
-  userId: Types.ObjectId;
+export interface AddressAttrWithoutUserID {
+  pincode: number;
   deliveredTo: string;
   country: string;
   state: string;
+  city: string;
   address: string;
   landMarks: string[];
+}
+
+export interface AddressAttr extends AddressAttrWithoutUserID {
+  userId: Types.ObjectId;
 }
 
 export interface Address extends Document, AddressAttr {}

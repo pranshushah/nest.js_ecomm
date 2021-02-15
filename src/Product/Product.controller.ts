@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Body } from '@nestjs/common';
 import { ProductService } from './Product.service';
 import { ValidateId } from '../utils/pipes/idValidation.pipe';
+import { ProductAttr } from './Product.model';
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -14,6 +15,12 @@ export class ProductController {
   async getAllCategories() {
     const categories = await this.productService.getUniqueCategories();
     return { categories };
+  }
+
+  @Post('add')
+  async addingTestData(@Body('products') products: ProductAttr[]) {
+    const productsDocs = await this.productService.addProductsToTest(products);
+    return { products: productsDocs };
   }
 
   @Get('titles')

@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { isValidObjectId, Model } from 'mongoose';
-import { timeoutMongooseQuery } from 'src/utils/helperFunction/timeout';
+import { timeoutMongooseQuery } from '../utils/helperFunction/timeout';
 import { User, userAttr } from './User.model';
 
 @Injectable()
