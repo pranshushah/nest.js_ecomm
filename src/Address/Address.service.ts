@@ -6,11 +6,12 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { userInfo } from '../User/User.model';
+import { UserDoc } from '../User/User.model';
 import { Address, AddressAttrWithoutUserID } from './Address.model';
 
-interface AddressAttrWithIdButWithoutUserID extends AddressAttrWithoutUserID {
+interface AddressAttrWithIdAndUserId extends AddressAttrWithoutUserID {
   id: string;
+  userId: string;
 }
 @Injectable()
 export class AddressService {
@@ -19,7 +20,7 @@ export class AddressService {
   ) {}
   async addAddressToDatabase(
     addressObj: AddressAttrWithoutUserID,
-    userInfo: userInfo,
+    userInfo: UserDoc,
   ) {
     try {
       const address = await new this.addressModel({
@@ -32,22 +33,26 @@ export class AddressService {
     }
   }
   async editAddressToDatabase(
-    addressObj: AddressAttrWithIdButWithoutUserID,
-    userInfo: userInfo,
+    addressObj: AddressAttrWithIdAndUserId,
+    userInfo: UserDoc,
   ) {
     try {
-      const updatedAddress = await this.addressModel.findByIdAndUpdate(
-        addressObj.id,
-        { ...addressObj, userId: userInfo.id },
-        { new: true },
-      );
-      if (updatedAddress) {
-        return updatedAddress;
+      if (addressObj.userId === userInfo.id.toString()) {
+        const updatedAddress = await this.addressModel.findByIdAndUpdate(
+          addressObj.id,
+          { ...addressObj },
+          { new: true },
+        );
+        if (updatedAddress) {
+          return updatedAddress;
+        } else {
+          throw new NotFoundException('cannot update the with incorrect id');
+        }
       } else {
-        throw new NotFoundException('cannot update the with incorrect id');
+        throw new BadRequestException('invalid address');
       }
     } catch (e) {
-      throw new NotFoundException('cannot update the with incorrect id');
+      throw new NotFoundException('somthing went wrong');
     }
   }
   async getAllAddressFromDatabase(userId: string) {
@@ -59,7 +64,7 @@ export class AddressService {
   }
   async getAddressfromDatabase(id: string, userId: string) {
     try {
-      return await this.addressModel.find({ userId: userId, id: id });
+      return await this.addressModel.findOne({ userId, _id: id });
     } catch (e) {
       throw new BadRequestException('somthing went wrong');
     }

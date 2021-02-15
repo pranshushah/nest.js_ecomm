@@ -33,7 +33,7 @@ export const UserSchema = new Schema(
     // to convert returning object as we want
     toJSON: {
       versionKey: false,
-      transform(doc: User, ret) {
+      transform(doc: UserDoc, ret) {
         ret.id = ret._id;
         delete ret._id;
       },
@@ -51,4 +51,4 @@ export interface userInfo extends userAttr {
   id: string;
 }
 // this will be type of document when create with new User();
-export interface User extends Document, userAttr {}
+export interface UserDoc extends Document, userAttr {}

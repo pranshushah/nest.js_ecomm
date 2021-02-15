@@ -6,11 +6,11 @@ export const AddressSchema = new Schema(
       type: Number,
       required: [true, 'pincode is required'],
       validate: {
-        validator(address: string) {
-          return /^[1-9]{1}[0-9]{2}\\s{0,1}[0-9]{3}$/.test(address);
+        validator(pindcode: string) {
+          return pindcode.toString().length === 6;
         },
         message(message) {
-          return `${message.value} is not valid pinoce`;
+          return `${message.value} is not valid pincode`;
         },
       },
     },
@@ -100,10 +100,10 @@ export const AddressSchema = new Schema(
         },
       },
     },
-    // userId: {
-    //   type: Types.ObjectId,
-    //   required: [true, 'userid is required'],
-    // },
+    userId: {
+      type: Types.ObjectId,
+      required: [true, 'userid is required'],
+    },
   },
   {
     // to convert returning object as we want
@@ -126,7 +126,6 @@ export interface AddressAttrWithoutUserID {
   address: string;
   landMarks: string[];
 }
-
 export interface AddressAttr extends AddressAttrWithoutUserID {
   userId: Types.ObjectId;
 }

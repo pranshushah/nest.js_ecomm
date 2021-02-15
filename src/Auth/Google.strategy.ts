@@ -28,6 +28,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         imageURL: profile._json.picture as string,
       },
     );
+    //@ts-ignore
     done(undefined, userDoc);
   }
 }

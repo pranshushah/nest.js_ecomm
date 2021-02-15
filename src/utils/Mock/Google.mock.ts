@@ -39,6 +39,7 @@ export default class MockStrategy extends Strategy {
         if (!user) {
           return this.fail(info);
         }
+        //@ts-ignore
         this.success(user, info);
       });
     } catch (e) {

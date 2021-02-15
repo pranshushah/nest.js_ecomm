@@ -1,12 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { isValidObjectId, Model } from 'mongoose';
-import { timeoutMongooseQuery } from '../utils/helperFunction/timeout';
-import { User, userAttr } from './User.model';
+import { UserDoc, userAttr } from './User.model';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<UserDoc>,
+  ) {}
   async AddUserIfDoesNotExist(user: userAttr) {
     const userDoc = await this.userModel.findOne({
       googleId: user.googleId,
@@ -31,7 +32,7 @@ export class UserService {
         throw new UnauthorizedException();
       }
     } catch (e) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(e);
     }
   }
 }

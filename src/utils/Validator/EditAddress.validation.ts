@@ -51,4 +51,8 @@ export class EditAddress {
   @IsString()
   @IsNotEmpty()
   id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
 }

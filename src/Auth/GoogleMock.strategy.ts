@@ -26,6 +26,7 @@ export class GoogleMockStrategy extends PassportStrategy(
         imageURL: profile._json.picture as string,
       },
     );
+    //@ts-ignore
     done(undefined, userDoc);
   }
 }

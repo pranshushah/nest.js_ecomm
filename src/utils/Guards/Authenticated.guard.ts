@@ -11,7 +11,7 @@ export class AuthenticatedGuard implements CanActivate {
     if (request.user) {
       return true;
     } else {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('not authenticated');
     }
   }
 }
