@@ -94,7 +94,7 @@ export interface ProductAttr {
   product_category: string;
   image: string;
   brand?: string;
-  final_price: string;
+  final_price: number;
 }
 
 export interface Product extends Document, ProductAttr {}

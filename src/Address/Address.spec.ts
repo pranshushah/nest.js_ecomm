@@ -225,7 +225,7 @@ describe('goole-oauth', () => {
       .post('/api/address')
       .send(subset)
       .set('Cookie', cookie);
-    const res1 = await request(server)
+    await request(server)
       .get(`/api/address/${res.body.address.id}`)
       .expect(401);
   });
