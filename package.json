@@ -34,6 +34,7 @@
     "class-validator": "^0.13.1",
     "cookie-session": "^1.4.0",
     "express-session": "^1.17.1",
+    "helmet": "^4.4.1",
     "mongodb-memory-server": "^6.9.3",
     "mongoose": "^5.11.15",
     "passport": "^0.4.1",

@@ -6,6 +6,7 @@ import { ProductModule } from './Product/Product.module';
 import { AuthModule } from './Auth/Auth.Module';
 import { AddressModule } from './Address/Address.module';
 import { OrderModule } from './Order/Order.module';
+import { ReviewModule } from './Review/Review.module';
 @Module({
   imports: [
     MongooseModule.forRoot(
@@ -15,6 +16,7 @@ import { OrderModule } from './Order/Order.module';
     AuthModule,
     AddressModule,
     OrderModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],

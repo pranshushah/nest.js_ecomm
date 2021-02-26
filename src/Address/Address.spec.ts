@@ -18,7 +18,7 @@ import { AddressService } from './Address.service';
 import { AddressSchema } from './Address.model';
 import { Auth } from '../test/Auth';
 
-describe('goole-oauth', () => {
+describe('Address', () => {
   let app: INestApplication;
   let mongo: MongoMemoryServer;
 
