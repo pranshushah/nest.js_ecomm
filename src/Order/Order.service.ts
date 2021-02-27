@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Order } from './Order.model';
 import { ProductsInOrderAttr, ProductInOrder } from './ProductsInOrder.model';
 import { Product } from '../Product/Product.model';
+import { timeoutMongooseQuery } from '../utils/helperFunction/timeout';
+
 @Injectable()
 export class OrderService {
   constructor(
@@ -46,10 +52,20 @@ export class OrderService {
   }
 
   async getAllOrdersFromDatabase(userId: Types.ObjectId) {
-    return await this.orderModel.find({ userId });
+    try {
+      return await timeoutMongooseQuery(
+        this.orderModel.find({ userId: userId }),
+      );
+    } catch (e) {
+      throw new RequestTimeoutException('taking longer than expected');
+    }
   }
 
   async getOrder(id: string) {
-    return this.orderModel.findOne({ _id: id });
+    try {
+      return await timeoutMongooseQuery(this.orderModel.findOne({ _id: id }));
+    } catch (e) {
+      throw new RequestTimeoutException('taking longer than expected');
+    }
   }
 }

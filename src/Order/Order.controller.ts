@@ -29,11 +29,15 @@ export class OrderController {
     );
     return { order };
   }
+
+  @UseGuards(AuthenticatedGuard)
   @Get(':id')
   async getOrder(@Param('id', ValidateId) id: string) {
     const order = await this.orderService.getOrder(id);
     return { order };
   }
+
+  @UseGuards(AuthenticatedGuard)
   @Get('all')
   async getAllOrder(@Req() req: Request) {
     const orders = await this.orderService.getAllOrdersFromDatabase(

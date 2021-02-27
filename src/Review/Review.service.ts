@@ -1,9 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Review, reviewAttrWithoutUserID } from './Review.model';
 import { Product } from '../Product/Product.model';
-
+import { timeoutMongooseQuery } from '../utils/helperFunction/timeout';
 @Injectable()
 export class ReviewService {
   constructor(
@@ -67,23 +71,27 @@ export class ReviewService {
   }
   async getCountOfTheReview(id: string) {
     try {
-      const count = await this.reviewModel
-        .find({
-          productId: id,
-        })
-        .countDocuments();
+      const count = await timeoutMongooseQuery(
+        this.reviewModel
+          .find({
+            productId: id,
+          })
+          .countDocuments(),
+      );
       return count + 2; // remember 2 reviews??
     } catch (e) {
-      throw new BadRequestException('product id is does not exist');
+      throw new RequestTimeoutException('taking longer than expected');
     }
   }
   async getAllReviews(id: string) {
     try {
-      return await this.reviewModel.find({
-        productId: id,
-      });
+      return await timeoutMongooseQuery(
+        this.reviewModel.find({
+          productId: id,
+        }),
+      );
     } catch (e) {
-      throw new BadRequestException('product id is does not exist');
+      throw new RequestTimeoutException('taking longer than expected');
     }
   }
 }

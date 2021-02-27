@@ -1,8 +1,8 @@
 import {
   ForbiddenException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
+  RequestTimeoutException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -22,7 +22,7 @@ export class ProductService {
       );
       return categories;
     } catch (e) {
-      throw new InternalServerErrorException(
+      throw new RequestTimeoutException(
         'taking longer than expected please try later',
       );
     }
@@ -35,7 +35,7 @@ export class ProductService {
       );
       return title;
     } catch (e) {
-      throw new InternalServerErrorException(
+      throw new RequestTimeoutException(
         'taking longer than expected please try later',
       );
     }
@@ -56,7 +56,7 @@ export class ProductService {
       );
       return products;
     } catch (e) {
-      throw new InternalServerErrorException(
+      throw new RequestTimeoutException(
         'taking longer than expected please try later',
       );
     }
@@ -73,7 +73,9 @@ export class ProductService {
         throw new NotFoundException('product not found');
       }
     } catch (e) {
-      throw new NotFoundException('product not found');
+      throw new RequestTimeoutException(
+        'taking longer than expected please try later',
+      );
     }
   }
 
@@ -84,7 +86,7 @@ export class ProductService {
         .countDocuments();
       return count;
     } catch (e) {
-      throw new InternalServerErrorException(
+      throw new RequestTimeoutException(
         'taking longer than expected please try later',
       );
     }

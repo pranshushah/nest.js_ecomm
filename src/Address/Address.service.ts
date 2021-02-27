@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDoc } from '../User/User.model';
 import { Address, AddressAttrWithoutUserID } from './Address.model';
+import { timeoutMongooseQuery } from '../utils/helperFunction/timeout';
 
 interface AddressAttrWithIdAndUserId extends AddressAttrWithoutUserID {
   id: string;
@@ -38,10 +40,12 @@ export class AddressService {
   ) {
     try {
       if (addressObj.userId === userInfo.id.toString()) {
-        const updatedAddress = await this.addressModel.findByIdAndUpdate(
-          addressObj.id,
-          { ...addressObj },
-          { new: true },
+        const updatedAddress = await timeoutMongooseQuery(
+          this.addressModel.findByIdAndUpdate(
+            addressObj.id,
+            { ...addressObj },
+            { new: true },
+          ),
         );
         if (updatedAddress) {
           return updatedAddress;
@@ -52,21 +56,39 @@ export class AddressService {
         throw new BadRequestException('invalid address');
       }
     } catch (e) {
-      throw new NotFoundException('somthing went wrong');
+      if (typeof e === 'string') {
+        throw new InternalServerErrorException(e);
+      } else {
+        throw new BadRequestException('somthing went wrong');
+      }
     }
   }
+
   async getAllAddressFromDatabase(userId: string) {
     try {
-      return await this.addressModel.find({ userId: userId });
+      return await timeoutMongooseQuery(
+        this.addressModel.find({ userId: userId }),
+      );
     } catch (e) {
-      throw new BadRequestException('somthing went wrong');
+      if (typeof e === 'string') {
+        throw new InternalServerErrorException(e);
+      } else {
+        throw new BadRequestException('somthing went wrong');
+      }
     }
   }
+
   async getAddressfromDatabase(id: string, userId: string) {
     try {
-      return await this.addressModel.findOne({ userId, _id: id });
+      return await timeoutMongooseQuery(
+        this.addressModel.findOne({ _id: id, userId }),
+      );
     } catch (e) {
-      throw new BadRequestException('somthing went wrong');
+      if (typeof e === 'string') {
+        throw new InternalServerErrorException(e);
+      } else {
+        throw new BadRequestException('somthing went wrong');
+      }
     }
   }
 }
